@@ -12,8 +12,8 @@ class MyDataset(Dataset):
     def __init__(self, path:str, training=bool) -> None:
         super().__init__()
         self.flag = "training" if training else "test"
-        self.path = path + self.flag
-        self.name = os.listdir(os.path.join(self.path, "iamges"))
+        self.path = os.path.join(path, self.flag)
+        self.name = os.listdir(os.path.join(self.path, "images")) # 只有文件的名字不包含路劲
 
     def __len__(self):
         return len(self.name)
@@ -24,6 +24,8 @@ class MyDataset(Dataset):
         mask_path = os.path.join(self.path, "mask", images_name.split(".")[0]+"_mask.gif")
         images_im = keep_image_size_open(images_path)
         mask_im = keep_image_size_open(mask_path)
-        return transform(images_im, mask_im)
+        return transform(images_im), transform(mask_im)
     
 if __name__ == '__main__':
+    data = MyDataset("/root/workspace/U-Net/data/DRIVE")
+    print(data[0][0].shape)
